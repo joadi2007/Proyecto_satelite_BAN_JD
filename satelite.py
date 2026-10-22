@@ -28,3 +28,19 @@ class Satelite:
         """Por ejemplo: 'ISS (ZARYA) | LEO | 419.7 km'"""
         tipo = self.tipo_orbita()
         return f'{self.nombre} | {tipo} | {self.altitud_km:.1f} km'
+
+
+def crear_satelites(registros, momento):
+    """Devuelve una lista de objetos Satelite con su posición en `momento`."""
+    lista_sats = []
+    for registro in registros:
+        nombre = registro.get('OBJECT_NAME', 'Desconocido')
+        objeto_skyfield = crear_objeto_skyfield(registro)
+        
+        if objeto_skyfield is not None:
+            latitud, longitud, altitud_km = obtener_posicion(objeto_skyfield, momento)
+
+            if altitud_km >= 100:
+                sat = Satelite(nombre, latitud, longitud, altitud_km)
+                lista_sats.append(sat)
+    return lista_sats
