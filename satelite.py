@@ -3,10 +3,10 @@ from funciones_base import crear_objeto_skyfield, obtener_posicion
 class Satelite:
     def __init__(self, nombre, latitud, longitud, altitud_km):
         """Guarda los cuatro datos como atributos del objeto."""
-    self.nombre = nombre
-    self.latitud = latitud
-    self.longitud = longitud
-    self.altitud_km = altitud_km
+        self.nombre = nombre
+        self.latitud = latitud
+        self.longitud = longitud
+        self.altitud_km = altitud_km
 
     def tipo_orbita(self):
         """Devuelve "LEO", "MEO", "GEO" o "HEO" según la altitud (ver tabla)."""
