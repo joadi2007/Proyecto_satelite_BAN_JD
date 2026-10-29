@@ -62,8 +62,8 @@ def resumen_por_grupo(satelites) -> dict:
     for g, altitudes in agrupados.items():
         resumen[g] = {
             'cantidad': len(altitudes),
-            'min': min(altitudes),
-            'max': max(altitudes),
-            'promedio': sum(altitudes) / len(altitudes)
+            'minima': min(altitudes),
+            'media': sum(altitudes) / len(altitudes),
+            'maxima': max(altitudes)
         }
     return resumen
