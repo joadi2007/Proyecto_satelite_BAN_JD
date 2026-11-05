@@ -1,5 +1,4 @@
 from funciones_base import crear_objeto_skyfield, obtener_posicion
-
 class Satelite:
     def __init__(self, nombre, latitud, longitud, altitud_km):
         """Guarda los cuatro datos como atributos del objeto."""

@@ -1,5 +1,4 @@
 from catalogo import grupo
-
 def contar_por_tipo(satelites) -> dict:
     '''Devuelve un diccionario {"LEO": n, "MEO": n, "GEO": n, "HEO": n},
     con las cuatro claves siempre presentes (en 0 si no hay satélites de ese tipo).'''

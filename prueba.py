@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from catalogo import leer_satelites, grupo, contar_por_grupo, lanzamientos_por_anio
-from satelite import Satelite, crear_satelites
+from Proyecto_satelite_BAN_JD.catalogo import leer_satelites, grupo, contar_por_grupo, lanzamientos_por_anio
+from Proyecto_satelite_BAN_JD.satelite import Satelite, crear_satelites
 
 # --- Pruebas de catalogo.py ---
 registros = leer_satelites("datos/satelites.json")
