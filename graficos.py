@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 def barras_lanzamientos(por_anio, desde=1990, hasta=2026):
     """Barras con la cantidad de satélites lanzados por año.
@@ -64,7 +65,7 @@ def hist_leo(satelites, ancho_bin=10):
     bins = np.arange(200, 2000 + ancho_bin, ancho_bin)
 
     plt.figure(figsize=(10, 4))
-    plt.hist(altitudes, bins=bins, edgecolor='black')
+    plt.hist(altitudes, bins=bins, edgecolor='k')
     plt.xlabel('Altitud (km)')
     plt.ylabel('Frecuencia')
     plt.title(f'Histograma de altitudes LEO (Ancho de bin: {ancho_bin} km)')
@@ -76,9 +77,21 @@ def hist_alt_log(satelites, ancho_bin=10):
     bins = np.logspace(np.log10(min(altitudes)), np.log10(max(altitudes)), 50)
 
     plt.figure(figsize=(10, 4))
-    plt.hist(altitudes, bins=bins, edgecolor='black')
+    plt.hist(altitudes, bins=bins, edgecolor='k')
     plt.xscale('log')
     plt.xlabel('Altitud (km, escala logarítmica)')
     plt.ylabel('Frecuencia')
     plt.title(f'Histograma de altitudes (Ancho de bin logarítmico: {ancho_bin})')
+    plt.show()
+
+def hist_inc(registros):
+    '''Histograma de la inclinación orbital (de 0° a 180°) con bins de 1° a partir de los registros JSON.'''
+    inclinaciones = [float(reg['INCLINATION']) for reg in registros if 'INCLINATION' in reg]
+    bins = np.arange(0, 181, 1)
+
+    plt.figure(figsize=(10,4))
+    plt.hist(inclinaciones, bins=bins, edgecolor='none')
+    plt.xlabel('Inclinación (grados)')
+    plt.ylabel('Distribución de inclinaciones orbitales (0° a 180°)')
+    plt.xlim(0, 180)
     plt.show()
