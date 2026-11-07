@@ -16,3 +16,16 @@ def barras_lanzamientos(por_anio, desde=1990, hasta=2026):
     ax.set_title("Lanzamientos por año (satélites activos hoy)")
     plt.close(fig)
     return fig
+
+def altitud_media(resumen: dict):
+    '''Gráfico de barras con la altitud media de cada grupo a partir de resumen_por_grupo.'''
+
+    grupos = list(resumen.keys())
+    medias = [resumen[g]['media'] for g in grupos]
+
+    plt.figure(figsize=(10, 4))
+    plt.bar(grupos, medias)
+    plt.xlabel('Grupo')
+    plt.ylabel('Grupo')
+    plt.title('Altitud media por grupo')
+    plt.show()
