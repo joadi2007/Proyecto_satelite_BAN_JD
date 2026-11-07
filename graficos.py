@@ -57,3 +57,28 @@ def barras_altura_media(resumen):
     plt.close(fig)
 
     return fig 
+
+def hist_leo(satelites, ancho_bin=10):
+    '''Histograma de altitudes en órbita baja (entre 200 y 2000 km) con el ancho de bin indicado.'''
+    altitudes = [s.altitud_km for s in satelites if 200 <= s.altitud_km <= 2000]
+    bins = np.arange(200, 2000 + ancho_bin, ancho_bin)
+
+    plt.figure(figsize=(10, 4))
+    plt.hist(altitudes, bins=bins, edgecolor='black')
+    plt.xlabel('Altitud (km)')
+    plt.ylabel('Frecuencia')
+    plt.title(f'Histograma de altitudes LEO (Ancho de bin: {ancho_bin} km)')
+    plt.show()
+
+def hist_alt_log(satelites, ancho_bin=10):
+    '''Histograma de todas las altitudes con eje X en escala logarítmica y bins de ancho logarítmico.'''
+    altitudes = [s.altitud_km for s in satelites if s.altitud_km > 0]
+    bins = np.logspace(np.log10(min(altitudes)), np.log10(max(altitudes)), 50)
+
+    plt.figure(figsize=(10, 4))
+    plt.hist(altitudes, bins=bins, edgecolor='black')
+    plt.xscale('log')
+    plt.xlabel('Altitud (km, escala logarítmica)')
+    plt.ylabel('Frecuencia')
+    plt.title(f'Histograma de altitudes (Ancho de bin logarítmico: {ancho_bin})')
+    plt.show()
