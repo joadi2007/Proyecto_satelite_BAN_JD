@@ -90,7 +90,7 @@ def hist_inc(registros):
     bins = np.arange(0, 181, 1)
 
     plt.figure(figsize=(10,4))
-    plt.hist(inclinaciones, bins=bins, edgecolor='none')
+    plt.hist(inclinaciones, bins=bins, edgecolor='k')
     plt.xlabel('Inclinación (grados)')
     plt.ylabel('Distribución de inclinaciones orbitales (0° a 180°)')
     plt.xlim(0, 180)
