@@ -101,3 +101,30 @@ def hist_inc(registros):
     ax.set_title("Distribución de inclinaciones orbitales")
     plt.close(fig)
     return fig
+
+
+# tema libre
+def evo_orbitas(satelites):
+    datos = {}
+    for s in satelites:
+        anio = s.anio
+        tipo = s.tipo.orbita()
+        if anio not in datos:
+            datos[anio] = {'LEO': 0, 'MEO': 0, 'GEO': 0, 'HEO': 0}
+        if tipo in datos[anio]:
+            datos[anio][tipo] += 1
+    anios = sorted(datos.keys())
+    leo = [datos[a]['LEO'] for a in anios]
+    meo = [datos[a]['MEO'] for a in anios]
+    geo = [datos[a]['GEO'] for a in anios]
+
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.plot(anios, leo, label='LEO', color='blue')
+    ax.plot(anios, meo, label='MEO', color='orange')
+    ax.plot(anios, geo, label='GEO', color='green')
+    ax.set_xlabel('Año de lanzamiento')
+    ax.set_ylabel('Cantidad de satélites')
+    ax.set_title('Evolución de satélites por Tipo de Órbita')
+    ax.legend()
+    plt.close(fig)
+    return fig
