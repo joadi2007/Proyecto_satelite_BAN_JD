@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from catalogo import anio_lanzamiento
+from matplotlib.patches import Circle
 
 def barras_lanzamientos(por_anio, desde=1990, hasta=2026):
     """Barras con la cantidad de satélites lanzados por año.
@@ -130,5 +131,55 @@ def evo_orbitas(registros, satelites):
     ax.set_ylabel("Cantidad de satélites")
     ax.set_title("Evolución de satélites por tipo de órbita")
     ax.legend()
+    plt.close(fig)
+    return fig
+
+RADIO_TIERRA = 6371  # km
+# (tipo, altitud mínima, altitud máxima, color); HEO se dibuja hasta el borde del gráfico
+BANDAS = [("LEO", 0, 2000, "#b7d4f0"), ("MEO", 2000, 34000, "#fde3b8"),
+          ("GEO", 34000, 37000, "#b9e3c0"), ("HEO", 37000, 1e9, "#f5c6cb")]
+
+
+def esquema_orbitas(registros, satelites, anio, solo_ese_anio=False):
+    """Esquema de las órbitas alrededor de la Tierra con los satélites lanzados hasta un año.
+
+    registros: lista de diccionarios del JSON (de ahí sale el año de lanzamiento).
+    satelites: lista de objetos Satelite (de ahí sale la altitud).
+    anio: año hasta el cual se cuentan los satélites lanzados.
+    solo_ese_anio: si es True, se cuentan solo los lanzados en ese año.
+    Los satélites están dispuestos en ángulos al azar: lo que importa es su altitud.
+    """
+    anio_por_nombre = {r["OBJECT_NAME"]: anio_lanzamiento(r) for r in registros}
+    if solo_ese_anio:
+        elegidos = [s for s in satelites if anio_por_nombre[s.nombre] == anio]
+    else:
+        elegidos = [s for s in satelites if anio_por_nombre[s.nombre] <= anio]
+
+    conteo = {tipo: 0 for tipo, _, _, _ in BANDAS}
+    for s in elegidos:
+        conteo[s.tipo_orbita()] += 1
+
+    rng = np.random.default_rng(0)
+    radios = np.array([RADIO_TIERRA + s.altitud_km for s in elegidos])
+    angulos = rng.uniform(0, 2 * np.pi, len(radios))
+
+    fig, ejes = plt.subplots(1, 2, figsize=(12, 6))
+    for ax, limite, titulo in ((ejes[0], 50000, "Escala real"),
+                               (ejes[1], RADIO_TIERRA + 2200, "Zoom en órbita baja")):
+        for tipo, minimo, maximo, color in reversed(BANDAS):   # de afuera hacia adentro
+            ax.add_patch(Circle((0, 0), RADIO_TIERRA + min(maximo, 1e6), color=color))
+        ax.add_patch(Circle((0, 0), RADIO_TIERRA, color="tab:cyan"))
+        dentro = radios <= limite
+        ax.scatter(radios[dentro] * np.cos(angulos[dentro]), radios[dentro] * np.sin(angulos[dentro]),
+                   s=2, color="k")
+        ax.set_xlim(-limite, limite)
+        ax.set_ylim(-limite, limite)
+        ax.set_aspect("equal")
+        ax.set_title(titulo)
+        ax.set_xlabel("km")
+    detalle = "solo lanzados en" if solo_ese_anio else "lanzados hasta"
+    ejes[0].text(0.02, 0.02, "\n".join(f"{t}: {n}" for t, n in conteo.items()),
+                 transform=ejes[0].transAxes, fontsize=9)
+    fig.suptitle(f"Satélites {detalle} {anio}")
     plt.close(fig)
     return fig
