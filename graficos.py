@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from catalogo import anio_lanzamiento
 
 def barras_lanzamientos(por_anio, desde=1990, hasta=2026):
     """Barras con la cantidad de satélites lanzados por año.
@@ -104,27 +105,30 @@ def hist_inc(registros):
 
 
 # tema libre
-def evo_orbitas(satelites):
+def evo_orbitas(registros, satelites):
+    """Evolución de la cantidad de satélites por tipo de órbita según el año de lanzamiento.
+
+    registros: lista de diccionarios del JSON (de ahí sale el año de lanzamiento).
+    satelites: lista de objetos Satelite (de ahí sale el tipo de órbita).
+    """
+    anio_por_nombre = {r["OBJECT_NAME"]: anio_lanzamiento(r) for r in registros}
+
     datos = {}
     for s in satelites:
-        anio = s.anio
-        tipo = s.tipo.orbita()
+        anio = anio_por_nombre[s.nombre]
+        tipo = s.tipo_orbita()
         if anio not in datos:
-            datos[anio] = {'LEO': 0, 'MEO': 0, 'GEO': 0, 'HEO': 0}
-        if tipo in datos[anio]:
-            datos[anio][tipo] += 1
-    anios = sorted(datos.keys())
-    leo = [datos[a]['LEO'] for a in anios]
-    meo = [datos[a]['MEO'] for a in anios]
-    geo = [datos[a]['GEO'] for a in anios]
+            datos[anio] = {"LEO": 0, "MEO": 0, "GEO": 0, "HEO": 0}
+        datos[anio][tipo] += 1
+    anios = sorted(datos)
 
     fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(anios, leo, label='LEO', color='blue')
-    ax.plot(anios, meo, label='MEO', color='orange')
-    ax.plot(anios, geo, label='GEO', color='green')
-    ax.set_xlabel('Año de lanzamiento')
-    ax.set_ylabel('Cantidad de satélites')
-    ax.set_title('Evolución de satélites por Tipo de Órbita')
+    for tipo, color in (("LEO", "blue"), ("MEO", "orange"), ("GEO", "green")):
+        ax.plot(anios, [datos[a][tipo] for a in anios], label=tipo, color=color)
+    ax.set_yscale("symlog")
+    ax.set_xlabel("Año de lanzamiento")
+    ax.set_ylabel("Cantidad de satélites")
+    ax.set_title("Evolución de satélites por tipo de órbita")
     ax.legend()
     plt.close(fig)
     return fig
